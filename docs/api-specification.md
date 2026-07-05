@@ -46,28 +46,36 @@ Dokumen ini memuat spesifikasi API utama untuk layanan Papiton Express.
 ### Create Order
 ```json
 {
-  "customerId": "cust_001",
+  "customerId": "550e8400-e29b-41d4-a716-446655440000",
+  "serviceTypeId": "550e8400-e29b-41d4-a716-446655440001",
+  "weight": 2.50,
+  "length": 30.00,
+  "width": 20.00,
+  "height": 10.00,
   "sender": {
     "name": "Budi",
     "phone": "081234567890",
-    "address": "Jakarta"
+    "address": "Jl. Merdeka No. 10",
+    "city": "Jakarta",
+    "province": "DKI Jakarta",
+    "postalCode": "10110"
   },
   "receiver": {
     "name": "Sari",
     "phone": "081298765432",
-    "address": "Bandung"
-  },
-  "serviceType": "regular",
-  "weightKg": 2.5,
-  "dimensionsCm": "30x20x10"
+    "address": "Jl. Dago No. 15",
+    "city": "Bandung",
+    "province": "Jawa Barat",
+    "postalCode": "40111"
+  }
 }
 ```
 
 ### Create Payment
 ```json
 {
-  "orderId": "ord_001",
-  "amount": 25000,
+  "orderId": "550e8400-e29b-41d4-a716-446655440002",
+  "amount": 25000.00,
   "paymentMethod": "bank_transfer"
 }
 ```

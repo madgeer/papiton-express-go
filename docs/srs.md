@@ -1,4 +1,4 @@
-﻿# Software Requirements Specification (SRS)
+# Software Requirements Specification (SRS)
 
 ## Daftar Isi
 
@@ -211,12 +211,12 @@ Diagram use case, ERD, dan sequence diagram disajikan dalam dokumen arsitektur p
 
 ### 5.1 Domain Data
 - Auth: users, refresh_tokens
-- Order: orders, shipping_addresses, service_types, tariffs
-- Payment: payments, payment_methods, payment_logs
-- Shipping: shipments, couriers, courier_locations
-- Warehouse: warehouses, warehouse_movements, warehouse_locations
+- Order: orders, addresses, service_types, tariffs, order_outbox
+- Payment: payments, payment_logs, payment_outbox
+- Shipping: couriers, shipments, shipping_outbox
+- Warehouse: warehouses, warehouse_movements, warehouse_outbox
 - Tracking: tracking_events
-- Notification: notification_logs, notification_templates
+- Notification: notifications
 
 ### 5.2 Data Requirement Utama
 - Setiap order wajib memiliki data pengirim, penerima, dan status.
