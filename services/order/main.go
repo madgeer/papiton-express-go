@@ -5,6 +5,8 @@ import (
 )
 
 func main() {
+	InitDB()
+	
 	r := gin.Default()
 
 	r.GET("/health", func(c *gin.Context) {
