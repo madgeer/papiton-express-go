@@ -1,0 +1,8 @@
+DROP TABLE IF EXISTS order_outbox;
+DROP TABLE IF EXISTS addresses;
+DROP TABLE IF EXISTS orders;
+DROP TABLE IF EXISTS tariffs;
+DROP TABLE IF EXISTS service_types;
+
+DROP TYPE IF EXISTS address_type;
+DROP TYPE IF EXISTS order_status;
