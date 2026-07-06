@@ -316,7 +316,7 @@ Checklist
 * [x] Auth Service (REST API)
 * [x] Order Service (REST API)
 * [x] Payment Service (REST API)
-* [ ] Shipping Service
+* [x] Shipping Service (REST API)
 * [ ] Warehouse Service
 * [ ] Tracking Service
 * [ ] Notification Service
@@ -357,4 +357,3 @@ Checklist
 | | - API Gateway & JWT Security | ⚪ Not Started |
 | | - E2E Integration Testing | ⚪ Not Started |
 | | - Dockerization, CI/CD, Kubernetes (AKS) | ⚪ Not Started |
-}
