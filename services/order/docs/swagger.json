@@ -1,0 +1,416 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "REST API for Papiton Express Order Service (Milestone 1)",
+        "title": "Papiton Express - Order Service API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "localhost:8081",
+    "basePath": "/",
+    "paths": {
+        "/orders": {
+            "get": {
+                "description": "Retrieve all orders in the system preloaded with addresses",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "orders"
+                ],
+                "summary": "List all orders",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Order"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a new shipment order, save addresses and outbox event",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "orders"
+                ],
+                "summary": "Create a new shipment order",
+                "parameters": [
+                    {
+                        "description": "Create Order Request Payload",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/main.CreateOrderRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/orders/{id}": {
+            "get": {
+                "description": "Retrieve a single order details preloaded with addresses and service type",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "orders"
+                ],
+                "summary": "Get order details by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Order UUID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Order"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/orders/{id}/complete": {
+            "post": {
+                "description": "Update the status of an order to COMPLETED",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "orders"
+                ],
+                "summary": "Mark an order as completed",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Order UUID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "main.CreateOrderRequest": {
+            "type": "object",
+            "required": [
+                "customerId",
+                "height",
+                "length",
+                "receiver",
+                "sender",
+                "serviceTypeId",
+                "weight",
+                "width"
+            ],
+            "properties": {
+                "customerId": {
+                    "type": "string"
+                },
+                "height": {
+                    "type": "number"
+                },
+                "length": {
+                    "type": "number"
+                },
+                "receiver": {
+                    "type": "object",
+                    "required": [
+                        "address",
+                        "city",
+                        "name",
+                        "phone",
+                        "postalCode",
+                        "province"
+                    ],
+                    "properties": {
+                        "address": {
+                            "type": "string"
+                        },
+                        "city": {
+                            "type": "string"
+                        },
+                        "name": {
+                            "type": "string"
+                        },
+                        "phone": {
+                            "type": "string"
+                        },
+                        "postalCode": {
+                            "type": "string"
+                        },
+                        "province": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "sender": {
+                    "type": "object",
+                    "required": [
+                        "address",
+                        "city",
+                        "name",
+                        "phone",
+                        "postalCode",
+                        "province"
+                    ],
+                    "properties": {
+                        "address": {
+                            "type": "string"
+                        },
+                        "city": {
+                            "type": "string"
+                        },
+                        "name": {
+                            "type": "string"
+                        },
+                        "phone": {
+                            "type": "string"
+                        },
+                        "postalCode": {
+                            "type": "string"
+                        },
+                        "province": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "serviceTypeId": {
+                    "type": "string"
+                },
+                "weight": {
+                    "type": "number"
+                },
+                "width": {
+                    "type": "number"
+                }
+            }
+        },
+        "models.Address": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "city": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "orderId": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "postalCode": {
+                    "type": "string"
+                },
+                "province": {
+                    "type": "string"
+                },
+                "type": {
+                    "$ref": "#/definitions/models.AddressType"
+                }
+            }
+        },
+        "models.AddressType": {
+            "type": "string",
+            "enum": [
+                "SENDER",
+                "RECEIVER"
+            ],
+            "x-enum-varnames": [
+                "AddressSender",
+                "AddressReceiver"
+            ]
+        },
+        "models.Order": {
+            "type": "object",
+            "properties": {
+                "addresses": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Address"
+                    }
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "customerId": {
+                    "type": "string"
+                },
+                "height": {
+                    "type": "number"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "insuranceFee": {
+                    "type": "number"
+                },
+                "length": {
+                    "type": "number"
+                },
+                "serviceType": {
+                    "$ref": "#/definitions/models.ServiceType"
+                },
+                "serviceTypeId": {
+                    "type": "string"
+                },
+                "shippingCost": {
+                    "type": "number"
+                },
+                "status": {
+                    "$ref": "#/definitions/models.OrderStatus"
+                },
+                "totalPrice": {
+                    "type": "number"
+                },
+                "trackingNumber": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "weight": {
+                    "type": "number"
+                },
+                "width": {
+                    "type": "number"
+                }
+            }
+        },
+        "models.OrderStatus": {
+            "type": "string",
+            "enum": [
+                "WAITING_PAYMENT",
+                "PAID",
+                "COURIER_ASSIGNED",
+                "PICKED_UP",
+                "WAREHOUSE_IN",
+                "IN_DELIVERY",
+                "DELIVERED",
+                "COMPLETED"
+            ],
+            "x-enum-varnames": [
+                "StatusWaitingPayment",
+                "StatusPaid",
+                "StatusCourierAssign",
+                "StatusPickedUp",
+                "StatusWarehouseIn",
+                "StatusInDelivery",
+                "StatusDelivered",
+                "StatusCompleted"
+            ]
+        },
+        "models.ServiceType": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "estimatedDay": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

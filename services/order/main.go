@@ -1,17 +1,21 @@
 package main
 
 import (
-	"encoding/json"
-	"fmt"
 	"net/http"
-	"strings"
-	"time"
+	"os"
 
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
-	"github.com/madgeer/papiton-express-go/services/order/models"
-	"gorm.io/gorm"
+
+	_ "github.com/madgeer/papiton-express-go/services/order/docs"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
+
+// @title Papiton Express - Order Service API
+// @version 1.0
+// @description REST API for Papiton Express Order Service (Milestone 1)
+// @host localhost:8081
+// @BasePath /
 
 func main() {
 	// Inisialisasi koneksi database GORM
@@ -20,155 +24,32 @@ func main() {
 	// Jalankan database seeder untuk data awal
 	SeedDatabase(DB)
 
+	// Dependency Injection Setup
+	orderRepo := NewOrderRepository(DB)
+	orderService := NewOrderService(orderRepo)
+	orderHandler := NewOrderHandler(orderService)
+
 	r := gin.Default()
 
+	// Health Check
 	r.GET("/health", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
 			"status": "ok",
 		})
 	})
 
-	r.POST("/orders", CreateOrderHandler)
+	// Order REST API Routes
+	r.POST("/orders", orderHandler.CreateOrderHandler)
+	r.GET("/orders/:id", orderHandler.GetOrderHandler)
+	r.GET("/orders", orderHandler.ListOrdersHandler)
+	r.POST("/orders/:id/complete", orderHandler.CompleteOrderHandler)
 
-	r.Run(":8081")
-}
+	// Swagger UI Route
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-func CreateOrderHandler(c *gin.Context) {
-	var req CreateOrderRequest
-	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8081"
 	}
-
-	// 1. Parsing UUID input
-	custUUID, err := uuid.Parse(req.CustomerID)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid customerId format"})
-		return
-	}
-	serviceUUID, err := uuid.Parse(req.ServiceTypeID)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid serviceTypeId format"})
-		return
-	}
-
-	// 2. Query tarif asli dari database (Case-Insensitive untuk kota)
-	var tariff models.Tariff
-	err = DB.Where(
-		"LOWER(origin_city) = ? AND LOWER(destination_city) = ? AND service_type_id = ?",
-		strings.ToLower(req.Sender.City),
-		strings.ToLower(req.Receiver.City),
-		serviceUUID,
-	).First(&tariff).Error
-
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": fmt.Sprintf("Tarif tidak ditemukan untuk rute %s -> %s dengan jenis layanan tersebut", req.Sender.City, req.Receiver.City),
-		})
-		return
-	}
-
-	// 3. Generate ID Order dan nomor resi (tracking number) unik
-	orderID := uuid.New()
-	trackingNum := fmt.Sprintf("PPN-%d", time.Now().UnixNano()/1e6)
-
-	// Perhitungan biaya berdasarkan tarif asli database
-	shippingCost := req.Weight * tariff.PricePerKg
-	insuranceFee := 5000.0 // Biaya asuransi flat
-	totalPrice := shippingCost + insuranceFee
-
-	order := models.Order{
-		ID:             orderID,
-		CustomerID:     custUUID,
-		ServiceTypeID:  serviceUUID,
-		TrackingNumber: trackingNum,
-		Weight:         req.Weight,
-		Length:         req.Length,
-		Width:          req.Width,
-		Height:         req.Height,
-		ShippingCost:   shippingCost,
-		InsuranceFee:   insuranceFee,
-		TotalPrice:     totalPrice,
-		Status:         models.StatusWaitingPayment,
-	}
-
-	senderAddress := models.Address{
-		ID:         uuid.New(),
-		OrderID:    orderID,
-		Type:       models.AddressSender,
-		Name:       req.Sender.Name,
-		Phone:      req.Sender.Phone,
-		Address:    req.Sender.Address,
-		City:       req.Sender.City,
-		Province:   req.Sender.Province,
-		PostalCode: req.Sender.PostalCode,
-	}
-
-	receiverAddress := models.Address{
-		ID:         uuid.New(),
-		OrderID:    orderID,
-		Type:       models.AddressReceiver,
-		Name:       req.Receiver.Name,
-		Phone:      req.Receiver.Phone,
-		Address:    req.Receiver.Address,
-		City:       req.Receiver.City,
-		Province:   req.Receiver.Province,
-		PostalCode: req.Receiver.PostalCode,
-	}
-
-	// 4. Serialisasi payload event OrderCreated untuk Kafka
-	eventPayload, err := json.Marshal(map[string]interface{}{
-		"orderId":        orderID.String(),
-		"customerId":    custUUID.String(),
-		"trackingNumber": trackingNum,
-		"totalPrice":     totalPrice,
-	})
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to serialize event payload"})
-		return
-	}
-
-	outboxEvent := models.OrderOutbox{
-		ID:            uuid.New(),
-		AggregateType: "order",
-		AggregateID:   orderID,
-		EventType:     "OrderCreated",
-		Payload:       eventPayload,
-		Status:        "PENDING",
-	}
-
-	// 5. Eksekusi database transaction untuk menjamin data tersimpan secara atomik
-	err = DB.Transaction(func(tx *gorm.DB) error {
-		// Simpan Order
-		if err := tx.Create(&order).Error; err != nil {
-			return err
-		}
-		// Simpan Alamat Pengirim
-		if err := tx.Create(&senderAddress).Error; err != nil {
-			return err
-		}
-		// Simpan Alamat Penerima
-		if err := tx.Create(&receiverAddress).Error; err != nil {
-			return err
-		}
-		// Simpan outbox event
-		if err := tx.Create(&outboxEvent).Error; err != nil {
-			return err
-		}
-		return nil
-	})
-
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Failed to save order: %v", err)})
-		return
-	}
-
-	// 6. Kembalikan respons sukses
-	c.JSON(http.StatusCreated, gin.H{
-		"message":        "Order successfully created",
-		"orderId":        orderID,
-		"trackingNumber": trackingNum,
-		"totalPrice":     totalPrice,
-		"status":         order.Status,
-	})
+	r.Run(":" + port)
 }

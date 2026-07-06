@@ -1,0 +1,289 @@
+basePath: /
+definitions:
+  main.CreateOrderRequest:
+    properties:
+      customerId:
+        type: string
+      height:
+        type: number
+      length:
+        type: number
+      receiver:
+        properties:
+          address:
+            type: string
+          city:
+            type: string
+          name:
+            type: string
+          phone:
+            type: string
+          postalCode:
+            type: string
+          province:
+            type: string
+        required:
+        - address
+        - city
+        - name
+        - phone
+        - postalCode
+        - province
+        type: object
+      sender:
+        properties:
+          address:
+            type: string
+          city:
+            type: string
+          name:
+            type: string
+          phone:
+            type: string
+          postalCode:
+            type: string
+          province:
+            type: string
+        required:
+        - address
+        - city
+        - name
+        - phone
+        - postalCode
+        - province
+        type: object
+      serviceTypeId:
+        type: string
+      weight:
+        type: number
+      width:
+        type: number
+    required:
+    - customerId
+    - height
+    - length
+    - receiver
+    - sender
+    - serviceTypeId
+    - weight
+    - width
+    type: object
+  models.Address:
+    properties:
+      address:
+        type: string
+      city:
+        type: string
+      createdAt:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      orderId:
+        type: string
+      phone:
+        type: string
+      postalCode:
+        type: string
+      province:
+        type: string
+      type:
+        $ref: '#/definitions/models.AddressType'
+    type: object
+  models.AddressType:
+    enum:
+    - SENDER
+    - RECEIVER
+    type: string
+    x-enum-varnames:
+    - AddressSender
+    - AddressReceiver
+  models.Order:
+    properties:
+      addresses:
+        items:
+          $ref: '#/definitions/models.Address'
+        type: array
+      createdAt:
+        type: string
+      customerId:
+        type: string
+      height:
+        type: number
+      id:
+        type: string
+      insuranceFee:
+        type: number
+      length:
+        type: number
+      serviceType:
+        $ref: '#/definitions/models.ServiceType'
+      serviceTypeId:
+        type: string
+      shippingCost:
+        type: number
+      status:
+        $ref: '#/definitions/models.OrderStatus'
+      totalPrice:
+        type: number
+      trackingNumber:
+        type: string
+      updatedAt:
+        type: string
+      weight:
+        type: number
+      width:
+        type: number
+    type: object
+  models.OrderStatus:
+    enum:
+    - WAITING_PAYMENT
+    - PAID
+    - COURIER_ASSIGNED
+    - PICKED_UP
+    - WAREHOUSE_IN
+    - IN_DELIVERY
+    - DELIVERED
+    - COMPLETED
+    type: string
+    x-enum-varnames:
+    - StatusWaitingPayment
+    - StatusPaid
+    - StatusCourierAssign
+    - StatusPickedUp
+    - StatusWarehouseIn
+    - StatusInDelivery
+    - StatusDelivered
+    - StatusCompleted
+  models.ServiceType:
+    properties:
+      createdAt:
+        type: string
+      estimatedDay:
+        type: integer
+      id:
+        type: string
+      name:
+        type: string
+    type: object
+host: localhost:8081
+info:
+  contact: {}
+  description: REST API for Papiton Express Order Service (Milestone 1)
+  title: Papiton Express - Order Service API
+  version: "1.0"
+paths:
+  /orders:
+    get:
+      description: Retrieve all orders in the system preloaded with addresses
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Order'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: List all orders
+      tags:
+      - orders
+    post:
+      consumes:
+      - application/json
+      description: Create a new shipment order, save addresses and outbox event
+      parameters:
+      - description: Create Order Request Payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/main.CreateOrderRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Create a new shipment order
+      tags:
+      - orders
+  /orders/{id}:
+    get:
+      description: Retrieve a single order details preloaded with addresses and service
+        type
+      parameters:
+      - description: Order UUID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Order'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get order details by ID
+      tags:
+      - orders
+  /orders/{id}/complete:
+    post:
+      description: Update the status of an order to COMPLETED
+      parameters:
+      - description: Order UUID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Mark an order as completed
+      tags:
+      - orders
+swagger: "2.0"
