@@ -1,0 +1,304 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "REST API for Papiton Express Shipping Service (Milestone 1)",
+        "title": "Papiton Express - Shipping Service API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "localhost:8084",
+    "basePath": "/",
+    "paths": {
+        "/shippings/assignments": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "shippings"
+                ],
+                "summary": "Assign a courier to an order (Create Shipment)",
+                "parameters": [
+                    {
+                        "description": "Assignment Payload",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.AssignShipmentRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/models.Shipment"
+                        }
+                    }
+                }
+            }
+        },
+        "/shippings/couriers": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "shippings"
+                ],
+                "summary": "List all couriers",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Courier"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "shippings"
+                ],
+                "summary": "Register a new courier",
+                "parameters": [
+                    {
+                        "description": "Create Courier Payload",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateCourierRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/models.Courier"
+                        }
+                    }
+                }
+            }
+        },
+        "/shippings/{id}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "shippings"
+                ],
+                "summary": "Get shipment details by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Shipment UUID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Shipment"
+                        }
+                    }
+                }
+            }
+        },
+        "/shippings/{id}/status": {
+            "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "shippings"
+                ],
+                "summary": "Update shipment status",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Shipment UUID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Status Payload",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UpdateShipmentStatusRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Shipment"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "dto.AssignShipmentRequest": {
+            "type": "object",
+            "required": [
+                "courierId",
+                "orderId"
+            ],
+            "properties": {
+                "courierId": {
+                    "type": "string"
+                },
+                "orderId": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.CreateCourierRequest": {
+            "type": "object",
+            "required": [
+                "name",
+                "phone"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.UpdateShipmentStatusRequest": {
+            "type": "object",
+            "required": [
+                "status"
+            ],
+            "properties": {
+                "notes": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string",
+                    "enum": [
+                        "PICKED_UP",
+                        "ON_TRANSIT",
+                        "OUT_FOR_DELIVERY",
+                        "DELIVERED",
+                        "FAILED"
+                    ]
+                }
+            }
+        },
+        "models.Courier": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "status": {
+                    "$ref": "#/definitions/models.CourierStatus"
+                },
+                "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.CourierStatus": {
+            "type": "string",
+            "enum": [
+                "AVAILABLE",
+                "ON_DELIVERY",
+                "OFFLINE"
+            ],
+            "x-enum-varnames": [
+                "CourierAvailable",
+                "CourierOnDelivery",
+                "CourierOffline"
+            ]
+        },
+        "models.Shipment": {
+            "type": "object",
+            "properties": {
+                "courier": {
+                    "$ref": "#/definitions/models.Courier"
+                },
+                "courierId": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "notes": {
+                    "type": "string"
+                },
+                "orderId": {
+                    "type": "string"
+                },
+                "status": {
+                    "$ref": "#/definitions/models.ShipmentStatus"
+                },
+                "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.ShipmentStatus": {
+            "type": "string",
+            "enum": [
+                "PENDING_PICKUP",
+                "PICKED_UP",
+                "ON_TRANSIT",
+                "OUT_FOR_DELIVERY",
+                "DELIVERED",
+                "FAILED"
+            ],
+            "x-enum-varnames": [
+                "ShipmentPendingPickup",
+                "ShipmentPickedUp",
+                "ShipmentOnTransit",
+                "ShipmentOutForDelivery",
+                "ShipmentDelivered",
+                "ShipmentFailed"
+            ]
+        }
+    }
+}

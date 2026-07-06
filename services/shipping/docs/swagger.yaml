@@ -1,0 +1,204 @@
+basePath: /
+definitions:
+  dto.AssignShipmentRequest:
+    properties:
+      courierId:
+        type: string
+      orderId:
+        type: string
+    required:
+    - courierId
+    - orderId
+    type: object
+  dto.CreateCourierRequest:
+    properties:
+      name:
+        type: string
+      phone:
+        type: string
+    required:
+    - name
+    - phone
+    type: object
+  dto.UpdateShipmentStatusRequest:
+    properties:
+      notes:
+        type: string
+      status:
+        enum:
+        - PICKED_UP
+        - ON_TRANSIT
+        - OUT_FOR_DELIVERY
+        - DELIVERED
+        - FAILED
+        type: string
+    required:
+    - status
+    type: object
+  models.Courier:
+    properties:
+      createdAt:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      phone:
+        type: string
+      status:
+        $ref: '#/definitions/models.CourierStatus'
+      updatedAt:
+        type: string
+    type: object
+  models.CourierStatus:
+    enum:
+    - AVAILABLE
+    - ON_DELIVERY
+    - OFFLINE
+    type: string
+    x-enum-varnames:
+    - CourierAvailable
+    - CourierOnDelivery
+    - CourierOffline
+  models.Shipment:
+    properties:
+      courier:
+        $ref: '#/definitions/models.Courier'
+      courierId:
+        type: string
+      createdAt:
+        type: string
+      id:
+        type: string
+      notes:
+        type: string
+      orderId:
+        type: string
+      status:
+        $ref: '#/definitions/models.ShipmentStatus'
+      updatedAt:
+        type: string
+    type: object
+  models.ShipmentStatus:
+    enum:
+    - PENDING_PICKUP
+    - PICKED_UP
+    - ON_TRANSIT
+    - OUT_FOR_DELIVERY
+    - DELIVERED
+    - FAILED
+    type: string
+    x-enum-varnames:
+    - ShipmentPendingPickup
+    - ShipmentPickedUp
+    - ShipmentOnTransit
+    - ShipmentOutForDelivery
+    - ShipmentDelivered
+    - ShipmentFailed
+host: localhost:8084
+info:
+  contact: {}
+  description: REST API for Papiton Express Shipping Service (Milestone 1)
+  title: Papiton Express - Shipping Service API
+  version: "1.0"
+paths:
+  /shippings/{id}:
+    get:
+      parameters:
+      - description: Shipment UUID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Shipment'
+      summary: Get shipment details by ID
+      tags:
+      - shippings
+  /shippings/{id}/status:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Shipment UUID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Status Payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateShipmentStatusRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Shipment'
+      summary: Update shipment status
+      tags:
+      - shippings
+  /shippings/assignments:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Assignment Payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AssignShipmentRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Shipment'
+      summary: Assign a courier to an order (Create Shipment)
+      tags:
+      - shippings
+  /shippings/couriers:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Courier'
+            type: array
+      summary: List all couriers
+      tags:
+      - shippings
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Create Courier Payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateCourierRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Courier'
+      summary: Register a new courier
+      tags:
+      - shippings
+swagger: "2.0"

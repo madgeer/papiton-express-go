@@ -182,17 +182,17 @@ Checklist
 
 Status
 
-⚪ Not Started
+🟢 Completed (Milestone 1 - Standalone REST API)
 
 Checklist
 
-* [ ] Migration
-* [ ] Models
-* [ ] Courier CRUD
-* [ ] Shipment CRUD
-* [ ] Assignment Logic
-* [ ] Swagger
-* [ ] Unit Test
+* [x] Migration
+* [x] Models
+* [x] Courier CRUD
+* [x] Shipment CRUD
+* [x] Assignment Logic
+* [x] Swagger
+* [x] Unit Test (shipping_service_test.go & api_test.go)
 * [ ] Dockerfile
 
 ---
@@ -346,7 +346,7 @@ Checklist
 | | - Auth Service (REST API CRUD) | ✓ Complete |
 | | - Order Service (REST API CRUD + Test) | ✓ Complete |
 | | - Payment Service (REST API CRUD + Test) | ✓ Complete |
-| | - Shipping Service (REST API CRUD) | ⚪ Not Started |
+| | - Shipping Service (REST API CRUD + Test) | ✓ Complete |
 | | - Warehouse Service (REST API CRUD) | ⚪ Not Started |
 | | - Tracking Service (REST API CRUD) | ⚪ Not Started |
 | | - Notification Service (REST API CRUD) | ⚪ Not Started |
@@ -357,3 +357,4 @@ Checklist
 | | - API Gateway & JWT Security | ⚪ Not Started |
 | | - E2E Integration Testing | ⚪ Not Started |
 | | - Dockerization, CI/CD, Kubernetes (AKS) | ⚪ Not Started |
+}
