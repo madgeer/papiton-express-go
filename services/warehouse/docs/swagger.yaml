@@ -1,0 +1,171 @@
+basePath: /
+definitions:
+  dto.CreateMovementRequest:
+    properties:
+      destinationCity:
+        type: string
+      notes:
+        type: string
+      orderId:
+        type: string
+      type:
+        enum:
+        - WAREHOUSE_IN
+        - WAREHOUSE_OUT
+        type: string
+      warehouseId:
+        type: string
+    required:
+    - orderId
+    - type
+    - warehouseId
+    type: object
+  dto.CreateRouteRequest:
+    properties:
+      destinationCity:
+        type: string
+      nextWarehouseId:
+        type: string
+      originWarehouseId:
+        type: string
+    required:
+    - destinationCity
+    - originWarehouseId
+    type: object
+  dto.CreateWarehouseRequest:
+    properties:
+      city:
+        type: string
+      name:
+        type: string
+    required:
+    - city
+    - name
+    type: object
+  dto.MovementResponse:
+    properties:
+      message:
+        type: string
+      movementId:
+        type: string
+      nextWarehouseId:
+        type: string
+      orderId:
+        type: string
+      type:
+        type: string
+      warehouseId:
+        type: string
+    type: object
+  models.Warehouse:
+    properties:
+      city:
+        type: string
+      createdAt:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  models.WarehouseRoute:
+    properties:
+      createdAt:
+        type: string
+      destinationCity:
+        type: string
+      id:
+        type: string
+      nextWarehouseId:
+        type: string
+      originWarehouseId:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+host: localhost:8085
+info:
+  contact: {}
+  description: REST API for Papiton Express Warehouse Service (Milestone 1)
+  title: Papiton Express - Warehouse Service API
+  version: "1.0"
+paths:
+  /warehouses:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Warehouse'
+            type: array
+      summary: List all warehouses
+      tags:
+      - warehouses
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Create Warehouse Payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateWarehouseRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Warehouse'
+      summary: Register a new warehouse
+      tags:
+      - warehouses
+  /warehouses/movements:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Record Movement Payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateMovementRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dto.MovementResponse'
+      summary: Record package scan movement (IN/OUT) and return routing instructions
+      tags:
+      - warehouses
+  /warehouses/routes:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Create Route Payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateRouteRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.WarehouseRoute'
+      summary: Register a static route rule
+      tags:
+      - warehouses
+swagger: "2.0"

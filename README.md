@@ -14,6 +14,7 @@ Proyek ini menggunakan fitur **Go Workspaces (`go.work`)** untuk mengelola multi
   * **`services/auth/`**: Mengelola registrasi user, login dengan BCrypt password hashing, JWT Access Token, dan Refresh Token.
   * **`services/payment/`**: Mengelola invoice pembayaran, status transaksi, dan simulasi callback webhook payment gateway.
   * **`services/shipping/`**: Mengelola registrasi kurir, penugasan kurir otomatis ke pesanan, dan pembaruan status logistik pengiriman paket.
+  * **`services/warehouse/`**: Mengelola pendaftaran gudang (warehouses), pengaturan rute transit statis gudang, dan pencatatan riwayat paket masuk/keluar gudang (movements).
 
 ---
 
@@ -25,6 +26,7 @@ Proyek ini menggunakan fitur **Go Workspaces (`go.work`)** untuk mengelola multi
 | **Auth Service** | `8082` | `http://localhost:8082/swagger/index.html` | `papiton_auth` |
 | **Payment Service** | `8083` | `http://localhost:8083/swagger/index.html` | `papiton_payment` |
 | **Shipping Service** | `8084` | `http://localhost:8084/swagger/index.html` | `papiton_shipping` |
+| **Warehouse Service** | `8085` | `http://localhost:8085/swagger/index.html` | `papiton_warehouse` |
 
 ---
 
@@ -52,6 +54,7 @@ Sebelum menjalankan aplikasi, eksekusi skrip DDL SQL berikut pada database masin
 2. **Order DB (`papiton_order`)**: Jalankan skrip [migrations/000001_init_schema.up.sql](services/order/migrations/000001_init_schema.up.sql).
 3. **Payment DB (`papiton_payment`)**: Jalankan skrip [migrations/000001_init_payment_schema.up.sql](services/payment/migrations/000001_init_payment_schema.up.sql).
 4. **Shipping DB (`papiton_shipping`)**: Jalankan skrip [migrations/000001_init_shipping_schema.up.sql](services/shipping/migrations/000001_init_shipping_schema.up.sql).
+5. **Warehouse DB (`papiton_warehouse`)**: Jalankan skrip [migrations/000001_init_warehouse_schema.up.sql](services/warehouse/migrations/000001_init_warehouse_schema.up.sql).
 
 ### Langkah 3: Jalankan Microservices
 Buka terminal baru untuk masing-masing service dan jalankan perintah berikut:
@@ -80,6 +83,12 @@ Buka terminal baru untuk masing-masing service dan jalankan perintah berikut:
   go run ./cmd/api
   ```
 
+* **Menjalankan Warehouse Service**:
+  ```powershell
+  cd services/warehouse
+  go run ./cmd/api
+  ```
+
 ---
 
 ## 🧪 Cara Menjalankan Pengujian (Testing Guide)
@@ -89,7 +98,7 @@ Proyek ini telah dilengkapi dengan **Unit Testing** (menggunakan mock repository
 * **Menjalankan seluruh test di workspace**:
   Dari folder root (`papiton/`), jalankan:
   ```powershell
-  go test -v github.com/madgeer/papiton-express-go/services/order/... github.com/madgeer/papiton-express-go/services/payment/... github.com/madgeer/papiton-express-go/services/shipping/...
+  go test -v github.com/madgeer/papiton-express-go/services/order/... github.com/madgeer/papiton-express-go/services/payment/... github.com/madgeer/papiton-express-go/services/shipping/... github.com/madgeer/papiton-express-go/services/warehouse/...
   ```
 
 * **Menjalankan test spesifik per layanan**:
@@ -123,5 +132,10 @@ Jika Anda melakukan penambahan/perubahan route handler di masa depan, perbarui d
 * **Shipping Service**:
   ```powershell
   cd services/shipping
+  go run github.com/swaggo/swag/cmd/swag@v1.8.12 init -g cmd/api/main.go
+  ```
+* **Warehouse Service**:
+  ```powershell
+  cd services/warehouse
   go run github.com/swaggo/swag/cmd/swag@v1.8.12 init -g cmd/api/main.go
   ```

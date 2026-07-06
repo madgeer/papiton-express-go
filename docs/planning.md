@@ -201,16 +201,16 @@ Checklist
 
 Status
 
-⚪ Not Started
+🟢 Completed (Milestone 1 - Standalone REST API)
 
 Checklist
 
-* [ ] Migration
-* [ ] Models
-* [ ] Warehouse CRUD
-* [ ] Package Movement (Transit Logic)
-* [ ] Swagger
-* [ ] Unit Test
+* [x] Migration
+* [x] Models
+* [x] Warehouse CRUD
+* [x] Package Movement (Transit Routing Logic)
+* [x] Swagger
+* [x] Unit Test (warehouse_service_test.go & api_test.go)
 * [ ] Dockerfile
 
 ---
@@ -317,7 +317,7 @@ Checklist
 * [x] Order Service (REST API)
 * [x] Payment Service (REST API)
 * [x] Shipping Service (REST API)
-* [ ] Warehouse Service
+* [x] Warehouse Service (REST API)
 * [ ] Tracking Service
 * [ ] Notification Service
 
@@ -347,7 +347,7 @@ Checklist
 | | - Order Service (REST API CRUD + Test) | ✓ Complete |
 | | - Payment Service (REST API CRUD + Test) | ✓ Complete |
 | | - Shipping Service (REST API CRUD + Test) | ✓ Complete |
-| | - Warehouse Service (REST API CRUD) | ⚪ Not Started |
+| | - Warehouse Service (REST API CRUD + Test) | ✓ Complete |
 | | - Tracking Service (REST API CRUD) | ⚪ Not Started |
 | | - Notification Service (REST API CRUD) | ⚪ Not Started |
 | **Milestone 2** | **Event-Driven Integration (Kafka)** | ⚪ Not Started |
@@ -357,3 +357,4 @@ Checklist
 | | - API Gateway & JWT Security | ⚪ Not Started |
 | | - E2E Integration Testing | ⚪ Not Started |
 | | - Dockerization, CI/CD, Kubernetes (AKS) | ⚪ Not Started |
+}
