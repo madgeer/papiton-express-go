@@ -1,6 +1,7 @@
 go 1.25.7
 
 use (
+	./common
 	./services/auth
 	./services/order
 	./services/payment

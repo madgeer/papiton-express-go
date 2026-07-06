@@ -1,15 +1,15 @@
 basePath: /
 definitions:
-  main.AuthResponse:
+  dto.AuthResponse:
     properties:
       accessToken:
         type: string
       refreshToken:
         type: string
       user:
-        $ref: '#/definitions/main.UserDTO'
+        $ref: '#/definitions/dto.UserDTO'
     type: object
-  main.LoginRequest:
+  dto.LoginRequest:
     properties:
       email:
         type: string
@@ -19,14 +19,14 @@ definitions:
     - email
     - password
     type: object
-  main.RefreshTokenRequest:
+  dto.RefreshTokenRequest:
     properties:
       refreshToken:
         type: string
     required:
     - refreshToken
     type: object
-  main.RegisterRequest:
+  dto.RegisterRequest:
     properties:
       email:
         type: string
@@ -51,7 +51,7 @@ definitions:
     - phone
     - role
     type: object
-  main.UserDTO:
+  dto.UserDTO:
     properties:
       email:
         type: string
@@ -81,14 +81,14 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/main.LoginRequest'
+          $ref: '#/definitions/dto.LoginRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/main.AuthResponse'
+            $ref: '#/definitions/dto.AuthResponse'
         "400":
           description: Bad Request
           schema:
@@ -113,14 +113,14 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/main.RefreshTokenRequest'
+          $ref: '#/definitions/dto.RefreshTokenRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/main.AuthResponse'
+            $ref: '#/definitions/dto.AuthResponse'
         "400":
           description: Bad Request
           schema:
@@ -145,7 +145,7 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/main.RegisterRequest'
+          $ref: '#/definitions/dto.RegisterRequest'
       produces:
       - application/json
       responses:

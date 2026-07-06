@@ -64,7 +64,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/main.CreateOrderRequest"
+                            "$ref": "#/definitions/dto.CreateOrderRequest"
                         }
                     }
                 ],
@@ -182,7 +182,38 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "main.CreateOrderRequest": {
+        "dto.AddressDetail": {
+            "type": "object",
+            "required": [
+                "address",
+                "city",
+                "name",
+                "phone",
+                "postalCode",
+                "province"
+            ],
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "city": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "postalCode": {
+                    "type": "string"
+                },
+                "province": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.CreateOrderRequest": {
             "type": "object",
             "required": [
                 "customerId",
@@ -205,66 +236,10 @@ const docTemplate = `{
                     "type": "number"
                 },
                 "receiver": {
-                    "type": "object",
-                    "required": [
-                        "address",
-                        "city",
-                        "name",
-                        "phone",
-                        "postalCode",
-                        "province"
-                    ],
-                    "properties": {
-                        "address": {
-                            "type": "string"
-                        },
-                        "city": {
-                            "type": "string"
-                        },
-                        "name": {
-                            "type": "string"
-                        },
-                        "phone": {
-                            "type": "string"
-                        },
-                        "postalCode": {
-                            "type": "string"
-                        },
-                        "province": {
-                            "type": "string"
-                        }
-                    }
+                    "$ref": "#/definitions/dto.AddressDetail"
                 },
                 "sender": {
-                    "type": "object",
-                    "required": [
-                        "address",
-                        "city",
-                        "name",
-                        "phone",
-                        "postalCode",
-                        "province"
-                    ],
-                    "properties": {
-                        "address": {
-                            "type": "string"
-                        },
-                        "city": {
-                            "type": "string"
-                        },
-                        "name": {
-                            "type": "string"
-                        },
-                        "phone": {
-                            "type": "string"
-                        },
-                        "postalCode": {
-                            "type": "string"
-                        },
-                        "province": {
-                            "type": "string"
-                        }
-                    }
+                    "$ref": "#/definitions/dto.AddressDetail"
                 },
                 "serviceTypeId": {
                     "type": "string"

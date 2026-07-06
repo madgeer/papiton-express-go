@@ -36,7 +36,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/main.CreatePaymentRequest"
+                            "$ref": "#/definitions/dto.CreatePaymentRequest"
                         }
                     }
                 ],
@@ -84,7 +84,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/main.WebhookPaymentRequest"
+                            "$ref": "#/definitions/dto.WebhookPaymentRequest"
                         }
                     }
                 ],
@@ -158,7 +158,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "main.CreatePaymentRequest": {
+        "dto.CreatePaymentRequest": {
             "type": "object",
             "required": [
                 "amount",
@@ -177,7 +177,7 @@ const docTemplate = `{
                 }
             }
         },
-        "main.WebhookPaymentRequest": {
+        "dto.WebhookPaymentRequest": {
             "type": "object",
             "required": [
                 "paymentId",

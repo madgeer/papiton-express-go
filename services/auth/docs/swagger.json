@@ -29,7 +29,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/main.LoginRequest"
+                            "$ref": "#/definitions/dto.LoginRequest"
                         }
                     }
                 ],
@@ -37,7 +37,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/main.AuthResponse"
+                            "$ref": "#/definitions/dto.AuthResponse"
                         }
                     },
                     "400": {
@@ -77,7 +77,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/main.RefreshTokenRequest"
+                            "$ref": "#/definitions/dto.RefreshTokenRequest"
                         }
                     }
                 ],
@@ -85,7 +85,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/main.AuthResponse"
+                            "$ref": "#/definitions/dto.AuthResponse"
                         }
                     },
                     "400": {
@@ -125,7 +125,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/main.RegisterRequest"
+                            "$ref": "#/definitions/dto.RegisterRequest"
                         }
                     }
                 ],
@@ -156,7 +156,7 @@
         }
     },
     "definitions": {
-        "main.AuthResponse": {
+        "dto.AuthResponse": {
             "type": "object",
             "properties": {
                 "accessToken": {
@@ -166,11 +166,11 @@
                     "type": "string"
                 },
                 "user": {
-                    "$ref": "#/definitions/main.UserDTO"
+                    "$ref": "#/definitions/dto.UserDTO"
                 }
             }
         },
-        "main.LoginRequest": {
+        "dto.LoginRequest": {
             "type": "object",
             "required": [
                 "email",
@@ -185,7 +185,7 @@
                 }
             }
         },
-        "main.RefreshTokenRequest": {
+        "dto.RefreshTokenRequest": {
             "type": "object",
             "required": [
                 "refreshToken"
@@ -196,7 +196,7 @@
                 }
             }
         },
-        "main.RegisterRequest": {
+        "dto.RegisterRequest": {
             "type": "object",
             "required": [
                 "email",
@@ -230,7 +230,7 @@
                 }
             }
         },
-        "main.UserDTO": {
+        "dto.UserDTO": {
             "type": "object",
             "properties": {
                 "email": {

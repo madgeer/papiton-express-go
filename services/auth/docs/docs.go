@@ -36,7 +36,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/main.LoginRequest"
+                            "$ref": "#/definitions/dto.LoginRequest"
                         }
                     }
                 ],
@@ -44,7 +44,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/main.AuthResponse"
+                            "$ref": "#/definitions/dto.AuthResponse"
                         }
                     },
                     "400": {
@@ -84,7 +84,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/main.RefreshTokenRequest"
+                            "$ref": "#/definitions/dto.RefreshTokenRequest"
                         }
                     }
                 ],
@@ -92,7 +92,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/main.AuthResponse"
+                            "$ref": "#/definitions/dto.AuthResponse"
                         }
                     },
                     "400": {
@@ -132,7 +132,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/main.RegisterRequest"
+                            "$ref": "#/definitions/dto.RegisterRequest"
                         }
                     }
                 ],
@@ -163,7 +163,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "main.AuthResponse": {
+        "dto.AuthResponse": {
             "type": "object",
             "properties": {
                 "accessToken": {
@@ -173,11 +173,11 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "user": {
-                    "$ref": "#/definitions/main.UserDTO"
+                    "$ref": "#/definitions/dto.UserDTO"
                 }
             }
         },
-        "main.LoginRequest": {
+        "dto.LoginRequest": {
             "type": "object",
             "required": [
                 "email",
@@ -192,7 +192,7 @@ const docTemplate = `{
                 }
             }
         },
-        "main.RefreshTokenRequest": {
+        "dto.RefreshTokenRequest": {
             "type": "object",
             "required": [
                 "refreshToken"
@@ -203,7 +203,7 @@ const docTemplate = `{
                 }
             }
         },
-        "main.RegisterRequest": {
+        "dto.RegisterRequest": {
             "type": "object",
             "required": [
                 "email",
@@ -237,7 +237,7 @@ const docTemplate = `{
                 }
             }
         },
-        "main.UserDTO": {
+        "dto.UserDTO": {
             "type": "object",
             "properties": {
                 "email": {

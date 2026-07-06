@@ -1,6 +1,28 @@
 basePath: /
 definitions:
-  main.CreateOrderRequest:
+  dto.AddressDetail:
+    properties:
+      address:
+        type: string
+      city:
+        type: string
+      name:
+        type: string
+      phone:
+        type: string
+      postalCode:
+        type: string
+      province:
+        type: string
+    required:
+    - address
+    - city
+    - name
+    - phone
+    - postalCode
+    - province
+    type: object
+  dto.CreateOrderRequest:
     properties:
       customerId:
         type: string
@@ -9,49 +31,9 @@ definitions:
       length:
         type: number
       receiver:
-        properties:
-          address:
-            type: string
-          city:
-            type: string
-          name:
-            type: string
-          phone:
-            type: string
-          postalCode:
-            type: string
-          province:
-            type: string
-        required:
-        - address
-        - city
-        - name
-        - phone
-        - postalCode
-        - province
-        type: object
+        $ref: '#/definitions/dto.AddressDetail'
       sender:
-        properties:
-          address:
-            type: string
-          city:
-            type: string
-          name:
-            type: string
-          phone:
-            type: string
-          postalCode:
-            type: string
-          province:
-            type: string
-        required:
-        - address
-        - city
-        - name
-        - phone
-        - postalCode
-        - province
-        type: object
+        $ref: '#/definitions/dto.AddressDetail'
       serviceTypeId:
         type: string
       weight:
@@ -204,7 +186,7 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/main.CreateOrderRequest'
+          $ref: '#/definitions/dto.CreateOrderRequest'
       produces:
       - application/json
       responses:
