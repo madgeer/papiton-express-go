@@ -1,9 +1,10 @@
 package main
 
-import ( 	
+import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -15,6 +16,9 @@ import (
 func main() {
 	// Inisialisasi koneksi database GORM
 	InitDB()
+
+	// Jalankan database seeder untuk data awal
+	SeedDatabase(DB)
 
 	r := gin.Default()
 
@@ -48,13 +52,29 @@ func CreateOrderHandler(c *gin.Context) {
 		return
 	}
 
-	// 2. Generate ID Order dan nomor resi (tracking number) unik
+	// 2. Query tarif asli dari database (Case-Insensitive untuk kota)
+	var tariff models.Tariff
+	err = DB.Where(
+		"LOWER(origin_city) = ? AND LOWER(destination_city) = ? AND service_type_id = ?",
+		strings.ToLower(req.Sender.City),
+		strings.ToLower(req.Receiver.City),
+		serviceUUID,
+	).First(&tariff).Error
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": fmt.Sprintf("Tarif tidak ditemukan untuk rute %s -> %s dengan jenis layanan tersebut", req.Sender.City, req.Receiver.City),
+		})
+		return
+	}
+
+	// 3. Generate ID Order dan nomor resi (tracking number) unik
 	orderID := uuid.New()
 	trackingNum := fmt.Sprintf("PPN-%d", time.Now().UnixNano()/1e6)
 
-	// Perhitungan biaya simulasi (sebelum dipetakan ke data tarif asli)
-	shippingCost := req.Weight * 10000.0 // flat Rp 10.000 per kg
-	insuranceFee := 5000.0
+	// Perhitungan biaya berdasarkan tarif asli database
+	shippingCost := req.Weight * tariff.PricePerKg
+	insuranceFee := 5000.0 // Biaya asuransi flat
 	totalPrice := shippingCost + insuranceFee
 
 	order := models.Order{
@@ -96,7 +116,7 @@ func CreateOrderHandler(c *gin.Context) {
 		PostalCode: req.Receiver.PostalCode,
 	}
 
-	// 3. Serialisasi payload event OrderCreated untuk Kafka
+	// 4. Serialisasi payload event OrderCreated untuk Kafka
 	eventPayload, err := json.Marshal(map[string]interface{}{
 		"orderId":        orderID.String(),
 		"customerId":    custUUID.String(),
@@ -117,7 +137,7 @@ func CreateOrderHandler(c *gin.Context) {
 		Status:        "PENDING",
 	}
 
-	// 4. Eksekusi database transaction untuk menjamin data tersimpan secara atomik
+	// 5. Eksekusi database transaction untuk menjamin data tersimpan secara atomik
 	err = DB.Transaction(func(tx *gorm.DB) error {
 		// Simpan Order
 		if err := tx.Create(&order).Error; err != nil {
@@ -143,7 +163,7 @@ func CreateOrderHandler(c *gin.Context) {
 		return
 	}
 
-	// 5. Kembalikan respons sukses
+	// 6. Kembalikan respons sukses
 	c.JSON(http.StatusCreated, gin.H{
 		"message":        "Order successfully created",
 		"orderId":        orderID,
