@@ -329,8 +329,8 @@ Checklist
 
 ## Testing
 
-* [x] Unit Test (Order, Payment)
-* [x] Integration Test (Order, Payment)
+* [x] Unit Test (Order, Payment, Shipping, Warehouse, Tracking)
+* [x] Integration Test (Order, Payment, Shipping, Warehouse, Tracking)
 * [ ] End-to-End Test
 
 ---
