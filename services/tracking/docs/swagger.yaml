@@ -1,0 +1,141 @@
+basePath: /
+definitions:
+  dto.AddEventRequest:
+    properties:
+      description:
+        type: string
+      location:
+        type: string
+      status:
+        type: string
+    required:
+    - description
+    - status
+    type: object
+  dto.CreateTrackingRequest:
+    properties:
+      initialStatus:
+        type: string
+      orderId:
+        type: string
+      trackingNumber:
+        type: string
+    required:
+    - initialStatus
+    - orderId
+    - trackingNumber
+    type: object
+  models.Tracking:
+    properties:
+      createdAt:
+        type: string
+      currentStatus:
+        type: string
+      events:
+        items:
+          $ref: '#/definitions/models.TrackingEvent'
+        type: array
+      id:
+        type: string
+      lastUpdated:
+        type: string
+      orderId:
+        type: string
+      trackingNumber:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  models.TrackingEvent:
+    properties:
+      createdAt:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      location:
+        type: string
+      status:
+        type: string
+      trackingId:
+        type: string
+    type: object
+host: localhost:8086
+info:
+  contact: {}
+  description: REST API for Papiton Express Tracking Service (Milestone 1)
+  title: Papiton Express - Tracking Service API
+  version: "1.0"
+paths:
+  /trackings:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Create Tracking Payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateTrackingRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Tracking'
+      summary: Initialize tracking for an order
+      tags:
+      - trackings
+  /trackings/{num}/events:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Tracking Number
+        in: path
+        name: num
+        required: true
+        type: string
+      - description: Event Payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AddEventRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Tracking'
+      summary: Add a new tracking event (milestone) and update current status
+      tags:
+      - trackings
+  /trackings/search:
+    get:
+      parameters:
+      - description: Tracking Number
+        in: query
+        name: q
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Tracking'
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Search tracking by tracking number
+      tags:
+      - trackings
+swagger: "2.0"

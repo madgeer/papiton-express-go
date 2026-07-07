@@ -219,16 +219,16 @@ Checklist
 
 Status
 
-⚪ Not Started
+🟢 Completed (Milestone 1 - Standalone REST API)
 
 Checklist
 
-* [ ] Migration
-* [ ] Models
-* [ ] Tracking CRUD
-* [ ] Tracking Timeline
-* [ ] Swagger
-* [ ] Unit Test
+* [x] Migration
+* [x] Models
+* [x] Tracking CRUD
+* [x] Tracking Timeline (Timeline Events Preloaded)
+* [x] Swagger
+* [x] Unit Test (tracking_service_test.go & api_test.go)
 * [ ] Dockerfile
 
 ---
@@ -318,7 +318,7 @@ Checklist
 * [x] Payment Service (REST API)
 * [x] Shipping Service (REST API)
 * [x] Warehouse Service (REST API)
-* [ ] Tracking Service
+* [x] Tracking Service (REST API)
 * [ ] Notification Service
 
 ## Infrastructure
@@ -348,7 +348,7 @@ Checklist
 | | - Payment Service (REST API CRUD + Test) | ✓ Complete |
 | | - Shipping Service (REST API CRUD + Test) | ✓ Complete |
 | | - Warehouse Service (REST API CRUD + Test) | ✓ Complete |
-| | - Tracking Service (REST API CRUD) | ⚪ Not Started |
+| | - Tracking Service (REST API CRUD + Test) | ✓ Complete |
 | | - Notification Service (REST API CRUD) | ⚪ Not Started |
 | **Milestone 2** | **Event-Driven Integration (Kafka)** | ⚪ Not Started |
 | | - Outbox Worker & Kafka Producer | ⚪ Not Started |
