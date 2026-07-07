@@ -56,6 +56,177 @@ services:
     networks:
       - papiton-network
 
+  # ---------------------------------------------
+  # Papiton Backend Microservices (REST APIs)
+  # ---------------------------------------------
+  order-service:
+    build:
+      context: .
+      dockerfile: services/order/Dockerfile
+    container_name: papiton-order-service
+    ports:
+      - "8081:8081"
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=password
+      - DB_NAME=papiton_order
+      - DB_SSLMODE=disable
+      - DB_TIMEZONE=Asia/Jakarta
+      - PORT=8081
+    depends_on:
+      - postgres
+    networks:
+      - papiton-network
+
+  auth-service:
+    build:
+      context: .
+      dockerfile: services/auth/Dockerfile
+    container_name: papiton-auth-service
+    ports:
+      - "8082:8082"
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=password
+      - DB_NAME=papiton_auth
+      - DB_SSLMODE=disable
+      - DB_TIMEZONE=Asia/Jakarta
+      - PORT=8082
+    depends_on:
+      - postgres
+    networks:
+      - papiton-network
+
+  payment-service:
+    build:
+      context: .
+      dockerfile: services/payment/Dockerfile
+    container_name: papiton-payment-service
+    ports:
+      - "8083:8083"
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=password
+      - DB_NAME=papiton_payment
+      - DB_SSLMODE=disable
+      - DB_TIMEZONE=Asia/Jakarta
+      - PORT=8083
+    depends_on:
+      - postgres
+    networks:
+      - papiton-network
+
+  shipping-service:
+    build:
+      context: .
+      dockerfile: services/shipping/Dockerfile
+    container_name: papiton-shipping-service
+    ports:
+      - "8084:8084"
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=password
+      - DB_NAME=papiton_shipping
+      - DB_SSLMODE=disable
+      - DB_TIMEZONE=Asia/Jakarta
+      - PORT=8084
+    depends_on:
+      - postgres
+    networks:
+      - papiton-network
+
+  warehouse-service:
+    build:
+      context: .
+      dockerfile: services/warehouse/Dockerfile
+    container_name: papiton-warehouse-service
+    ports:
+      - "8085:8085"
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=password
+      - DB_NAME=papiton_warehouse
+      - DB_SSLMODE=disable
+      - DB_TIMEZONE=Asia/Jakarta
+      - PORT=8085
+    depends_on:
+      - postgres
+    networks:
+      - papiton-network
+
+  tracking-service:
+    build:
+      context: .
+      dockerfile: services/tracking/Dockerfile
+    container_name: papiton-tracking-service
+    ports:
+      - "8086:8086"
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=password
+      - DB_NAME=papiton_tracking
+      - DB_SSLMODE=disable
+      - DB_TIMEZONE=Asia/Jakarta
+      - PORT=8086
+    depends_on:
+      - postgres
+    networks:
+      - papiton-network
+
+  notification-service:
+    build:
+      context: .
+      dockerfile: services/notification/Dockerfile
+    container_name: papiton-notification-service
+    ports:
+      - "8087:8087"
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=password
+      - DB_NAME=papiton_notification
+      - DB_SSLMODE=disable
+      - DB_TIMEZONE=Asia/Jakarta
+      - PORT=8087
+    depends_on:
+      - postgres
+    networks:
+      - papiton-network
+
+  # ---------------------------------------------
+  # Papiton Frontend UI (React + Vite)
+  # ---------------------------------------------
+  frontend:
+    build:
+      context: ./frontend/frontend
+      dockerfile: Dockerfile
+    container_name: papiton-frontend
+    ports:
+      - "5173:5173"
+    depends_on:
+      - auth-service
+      - order-service
+      - payment-service
+      - shipping-service
+      - warehouse-service
+      - tracking-service
+      - notification-service
+    networks:
+      - papiton-network
+
 volumes:
   postgres_data:
 
