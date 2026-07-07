@@ -237,16 +237,16 @@ Checklist
 
 Status
 
-⚪ Not Started
+🟢 Completed (Milestone 1 - Standalone REST API)
 
 Checklist
 
-* [ ] Migration
-* [ ] Models
-* [ ] Notification CRUD
-* [ ] Email Sender
-* [ ] Swagger
-* [ ] Unit Test
+* [x] Migration
+* [x] Models
+* [x] Notification CRUD
+* [x] Email Sender (Simulated Delivery)
+* [x] Swagger
+* [x] Unit Test (notification_service_test.go & api_test.go)
 * [ ] Dockerfile
 
 ---
@@ -319,7 +319,7 @@ Checklist
 * [x] Shipping Service (REST API)
 * [x] Warehouse Service (REST API)
 * [x] Tracking Service (REST API)
-* [ ] Notification Service
+* [x] Notification Service (REST API)
 
 ## Infrastructure
 
@@ -329,8 +329,8 @@ Checklist
 
 ## Testing
 
-* [x] Unit Test (Order, Payment, Shipping, Warehouse, Tracking)
-* [x] Integration Test (Order, Payment, Shipping, Warehouse, Tracking)
+* [x] Unit Test (Order, Payment, Shipping, Warehouse, Tracking, Notification)
+* [x] Integration Test (Order, Payment, Shipping, Warehouse, Tracking, Notification)
 * [ ] End-to-End Test
 
 ---
@@ -339,7 +339,7 @@ Checklist
 
 | Milestone | Target | Status |
 | --------- | ------ | ------ |
-| **Milestone 1** | **Standalone REST APIs (No Kafka)** | 🟡 In Progress |
+| **Milestone 1** | **Standalone REST APIs (No Kafka)** | 🟢 Completed |
 | | - Analisis & Dokumentasi | ✓ Complete |
 | | - Lingkungan Pengembangan & Go Workspace | ✓ Complete |
 | | - Shared database connection (Modul `common`) | ✓ Complete |
@@ -349,7 +349,7 @@ Checklist
 | | - Shipping Service (REST API CRUD + Test) | ✓ Complete |
 | | - Warehouse Service (REST API CRUD + Test) | ✓ Complete |
 | | - Tracking Service (REST API CRUD + Test) | ✓ Complete |
-| | - Notification Service (REST API CRUD) | ⚪ Not Started |
+| | - Notification Service (REST API CRUD + Test) | ✓ Complete |
 | **Milestone 2** | **Event-Driven Integration (Kafka)** | ⚪ Not Started |
 | | - Outbox Worker & Kafka Producer | ⚪ Not Started |
 | | - Kafka Consumers (Order, Tracking, Notification) | ⚪ Not Started |

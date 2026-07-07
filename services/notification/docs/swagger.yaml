@@ -1,0 +1,113 @@
+basePath: /
+definitions:
+  dto.SendNotificationRequest:
+    properties:
+      content:
+        type: string
+      orderId:
+        type: string
+      recipientEmail:
+        type: string
+      recipientPhone:
+        type: string
+      type:
+        enum:
+        - EMAIL
+        - SMS
+        - WHATSAPP
+        type: string
+    required:
+    - content
+    - orderId
+    - recipientEmail
+    - recipientPhone
+    - type
+    type: object
+  models.Notification:
+    properties:
+      content:
+        type: string
+      createdAt:
+        type: string
+      id:
+        type: string
+      orderId:
+        type: string
+      recipientEmail:
+        type: string
+      recipientPhone:
+        type: string
+      status:
+        type: string
+      type:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+host: localhost:8087
+info:
+  contact: {}
+  description: REST API for Papiton Express Notification Service (Milestone 1)
+  title: Papiton Express - Notification Service API
+  version: "1.0"
+paths:
+  /notifications:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Send Notification Payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.SendNotificationRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Notification'
+      summary: Send and record a simulated notification
+      tags:
+      - notifications
+  /notifications/{id}:
+    get:
+      parameters:
+      - description: Notification UUID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Notification'
+      summary: Get notification details by ID
+      tags:
+      - notifications
+  /notifications/order/{orderId}:
+    get:
+      parameters:
+      - description: Order UUID
+        in: path
+        name: orderId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Notification'
+            type: array
+      summary: Get all notifications sent for a specific order
+      tags:
+      - notifications
+swagger: "2.0"

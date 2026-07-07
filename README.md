@@ -16,6 +16,7 @@ Proyek ini menggunakan fitur **Go Workspaces (`go.work`)** untuk mengelola multi
   * **`services/shipping/`**: Mengelola registrasi kurir, penugasan kurir otomatis ke pesanan, dan pembaruan status logistik pengiriman paket.
   * **`services/warehouse/`**: Mengelola pendaftaran gudang (warehouses), pengaturan rute transit statis gudang, dan pencatatan riwayat paket masuk/keluar gudang (movements).
   * **`services/tracking/`**: Mengelola inisialisasi nomor resi pelacakan (tracking) dan pencatatan timeline peristiwa/milestone paket dari awal hingga sampai ke penerima.
+  * **`services/notification/`**: Mengelola pengiriman dan pencatatan notifikasi pengiriman paket (simulasi E-mail, SMS, atau WhatsApp) ke penerima.
 
 ---
 
@@ -29,6 +30,7 @@ Proyek ini menggunakan fitur **Go Workspaces (`go.work`)** untuk mengelola multi
 | **Shipping Service** | `8084` | `http://localhost:8084/swagger/index.html` | `papiton_shipping` |
 | **Warehouse Service** | `8085` | `http://localhost:8085/swagger/index.html` | `papiton_warehouse` |
 | **Tracking Service** | `8086` | `http://localhost:8086/swagger/index.html` | `papiton_tracking` |
+| **Notification Service** | `8087` | `http://localhost:8087/swagger/index.html` | `papiton_notification` |
 
 ---
 
@@ -37,7 +39,7 @@ Proyek ini menggunakan fitur **Go Workspaces (`go.work`)** untuk mengelola multi
 Pastikan komputer lokal Anda sudah terpasang:
 1. **Go 1.21+** atau lebih baru.
 2. **Docker Desktop** (untuk PostgreSQL dan Kafka).
-3. Tools Database Client (seperti **DBeaver** atau **pgAdmin**).
+3. Tools Database Client (seperti **DBeaver** or **pgAdmin**).
 
 ---
 
@@ -58,6 +60,7 @@ Sebelum menjalankan aplikasi, eksekusi skrip DDL SQL berikut pada database masin
 4. **Shipping DB (`papiton_shipping`)**: Jalankan skrip [migrations/000001_init_shipping_schema.up.sql](services/shipping/migrations/000001_init_shipping_schema.up.sql).
 5. **Warehouse DB (`papiton_warehouse`)**: Jalankan skrip [migrations/000001_init_warehouse_schema.up.sql](services/warehouse/migrations/000001_init_warehouse_schema.up.sql).
 6. **Tracking DB (`papiton_tracking`)**: Jalankan skrip [migrations/000001_init_tracking_schema.up.sql](services/tracking/migrations/000001_init_tracking_schema.up.sql).
+7. **Notification DB (`papiton_notification`)**: Jalankan skrip [migrations/000001_init_notification_schema.up.sql](services/notification/migrations/000001_init_notification_schema.up.sql).
 
 ### Langkah 3: Jalankan Microservices
 Buka terminal baru untuk masing-masing service dan jalankan perintah berikut:
@@ -98,6 +101,12 @@ Buka terminal baru untuk masing-masing service dan jalankan perintah berikut:
   go run ./cmd/api
   ```
 
+* **Menjalankan Notification Service**:
+  ```powershell
+  cd services/notification
+  go run ./cmd/api
+  ```
+
 ---
 
 ## 🧪 Cara Menjalankan Pengujian (Testing Guide)
@@ -107,7 +116,7 @@ Proyek ini telah dilengkapi dengan **Unit Testing** (menggunakan mock repository
 * **Menjalankan seluruh test di workspace**:
   Dari folder root (`papiton/`), jalankan:
   ```powershell
-  go test -v github.com/madgeer/papiton-express-go/services/order/... github.com/madgeer/papiton-express-go/services/payment/... github.com/madgeer/papiton-express-go/services/shipping/... github.com/madgeer/papiton-express-go/services/warehouse/... github.com/madgeer/papiton-express-go/services/tracking/...
+  go test -v github.com/madgeer/papiton-express-go/services/order/... github.com/madgeer/papiton-express-go/services/payment/... github.com/madgeer/papiton-express-go/services/shipping/... github.com/madgeer/papiton-express-go/services/warehouse/... github.com/madgeer/papiton-express-go/services/tracking/... github.com/madgeer/papiton-express-go/services/notification/...
   ```
 
 * **Menjalankan test spesifik per layanan**:
@@ -151,5 +160,10 @@ Jika Anda melakukan penambahan/perubahan route handler di masa depan, perbarui d
 * **Tracking Service**:
   ```powershell
   cd services/tracking
+  go run github.com/swaggo/swag/cmd/swag@v1.8.12 init -g cmd/api/main.go
+  ```
+* **Notification Service**:
+  ```powershell
+  cd services/notification
   go run github.com/swaggo/swag/cmd/swag@v1.8.12 init -g cmd/api/main.go
   ```
