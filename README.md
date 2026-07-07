@@ -31,6 +31,7 @@ Proyek ini menggunakan fitur **Go Workspaces (`go.work`)** untuk mengelola multi
 | **Warehouse Service** | `8085` | `http://localhost:8085/swagger/index.html` | `papiton_warehouse` |
 | **Tracking Service** | `8086` | `http://localhost:8086/swagger/index.html` | `papiton_tracking` |
 | **Notification Service** | `8087` | `http://localhost:8087/swagger/index.html` | `papiton_notification` |
+| **Frontend (React)** | `5173` | - | - |
 
 ---
 
@@ -105,6 +106,12 @@ Buka terminal baru untuk masing-masing service dan jalankan perintah berikut:
   ```powershell
   cd services/notification
   go run ./cmd/api
+  ```
+
+* **Menjalankan Frontend (React)**:
+  ```powershell
+  cd frontend/frontend
+  npm run dev
   ```
 
 ---
