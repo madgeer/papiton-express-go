@@ -16,7 +16,7 @@ const Login = () => {
     email: '',
     password: '',
     phone: '',
-    role: 'CUSTOMER', // Default Role untuk Registrasi
+    role: 'CUSTOMER',
   });
 
   const handleChange = (e) => {
@@ -32,7 +32,6 @@ const Login = () => {
 
     try {
       if (isLogin) {
-        // Alur Login
         const response = await api.auth.post('/auth/login', {
           email: formData.email,
           password: formData.password,
@@ -40,17 +39,14 @@ const Login = () => {
 
         const { accessToken, user } = response.data;
         
-        // Simpan sesi login ke LocalStorage
         localStorage.setItem('token', accessToken);
         localStorage.setItem('user', JSON.stringify(user));
 
-        // Arahkan ke Dashboard sesuai Role masing-masing
         if (user.role === 'CUSTOMER') navigate('/customer');
         else if (user.role === 'COURIER') navigate('/courier');
         else if (user.role === 'WAREHOUSE_STAFF') navigate('/warehouse');
         else if (user.role === 'ADMIN') navigate('/admin');
       } else {
-        // Alur Registrasi
         await api.auth.post('/auth/register', {
           name: formData.name,
           email: formData.email,
@@ -59,9 +55,9 @@ const Login = () => {
           role: formData.role,
         });
 
-        setSuccess('Registrasi sukses! Silakan login.');
-        setIsLogin(true); // Ganti tab otomatis ke login setelah sukses
-        setFormData({ ...formData, password: '' }); // Bersihkan password
+        setSuccess('Registrasi sukses! Silakan login melalui tab Masuk.');
+        setIsLogin(true);
+        setFormData({ ...formData, password: '' });
       }
     } catch (err) {
       setError(err.response?.data?.error || 'Terjadi kesalahan sistem');
@@ -71,138 +67,150 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-950 px-4">
-      <div className="max-w-md w-full bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-2xl">
-        {/* Title */}
-        <div className="text-center mb-8">
-          <h2 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-blue-500 to-indigo-400 bg-clip-text text-transparent">
-            Papiton Express
-          </h2>
-          <p className="mt-2 text-sm text-slate-400">
-            {isLogin ? 'Masuk ke akun logistik Anda' : 'Buat akun ekspedisi baru'}
-          </p>
+    <div className="min-h-screen bg-[#F0F0F0] flex flex-col justify-between">
+      {/* Top Brand Banner Header */}
+      <header className="bg-[#4D148C] py-4 px-6 border-b-4 border-[#FF6600] flex justify-between items-center shadow-md">
+        <div className="flex items-center gap-2">
+          {/* FedEx 2003 Logo style: Bold Sans-Serif, Purple & Orange */}
+          <h1 className="text-3xl font-black tracking-tighter">
+            <span className="text-white">Papiton</span>
+            <span className="text-[#FF6600] bg-white px-2 ml-1 rounded-sm">Express</span>
+          </h1>
         </div>
+        <span className="text-xs text-white font-mono hidden sm:inline">Logistics Management Suite v2003</span>
+      </header>
 
-        {/* Tab Toggle */}
-        <div className="flex bg-slate-950 rounded-lg p-1 mb-6 border border-slate-800">
-          <button
-            onClick={() => { setIsLogin(true); setError(''); }}
-            className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${isLogin ? 'bg-blue-600 text-white shadow' : 'text-slate-400 hover:text-white'}`}
-          >
-            Masuk
-          </button>
-          <button
-            onClick={() => { setIsLogin(false); setError(''); }}
-            className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${!isLogin ? 'bg-blue-600 text-white shadow' : 'text-slate-400 hover:text-white'}`}
-          >
-            Daftar
-          </button>
-        </div>
+      {/* Main Login Box */}
+      <div className="flex-1 flex items-center justify-center p-4 my-8">
+        <div className="max-w-md w-full bg-white border-2 border-[#CCCCCC] rounded-sm p-6 shadow-md">
+          {/* Header text */}
+          <div className="border-b border-[#CCCCCC] pb-3 mb-4 flex justify-between items-center">
+            <h2 className="text-lg font-bold text-[#4D148C]">
+              {isLogin ? 'Login Pengguna' : 'Pendaftaran Pengguna Baru'}
+            </h2>
+            <span className="text-xs text-slate-500 font-mono">Secure Access</span>
+          </div>
 
-        {/* Alert Error / Success */}
-        {error && <div className="mb-4 p-3 bg-red-950/50 border border-red-900 text-red-400 text-sm rounded-lg">{error}</div>}
-        {success && <div className="mb-4 p-3 bg-green-950/50 border border-green-900 text-green-400 text-sm rounded-lg">{success}</div>}
+          {/* Web 1.0 Style Tab Toggles */}
+          <div className="flex mb-6 border-b-2 border-[#4D148C]">
+            <button
+              onClick={() => { setIsLogin(true); setError(''); }}
+              className={`py-2 px-6 text-sm font-bold border-t border-x rounded-t-sm transition-all ${
+                isLogin 
+                  ? 'bg-white border-[#4D148C] text-[#4D148C] translate-y-[2px] z-10' 
+                  : 'bg-[#EAEAEA] border-[#CCCCCC] text-[#666666] hover:bg-[#F4F4F4]'
+              }`}
+            >
+              Masuk
+            </button>
+            <button
+              onClick={() => { setIsLogin(false); setError(''); }}
+              className={`py-2 px-6 text-sm font-bold border-t border-x rounded-t-sm transition-all ${
+                !isLogin 
+                  ? 'bg-white border-[#4D148C] text-[#4D148C] translate-y-[2px] z-10' 
+                  : 'bg-[#EAEAEA] border-[#CCCCCC] text-[#666666] hover:bg-[#F4F4F4]'
+              }`}
+            >
+              Daftar Baru
+            </button>
+          </div>
 
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {!isLogin && (
-            <div>
-              <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Nama Lengkap</label>
-              <div className="relative">
-                <User className="absolute left-3 top-3 h-5 w-5 text-slate-500" />
+          {/* Messages */}
+          {error && <div className="mb-4 p-2.5 bg-[#FFF2F2] border border-[#FF9999] text-[#990000] text-xs font-semibold rounded-sm">{error}</div>}
+          {success && <div className="mb-4 p-2.5 bg-[#F2FFF2] border border-[#99FF99] text-[#006600] text-xs font-semibold rounded-sm">{success}</div>}
+
+          {/* Forms */}
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {!isLogin && (
+              <div>
+                <label className="block text-xs font-bold text-[#333333] mb-1">Nama Lengkap</label>
                 <input
                   type="text"
                   name="name"
                   required
                   value={formData.name}
                   onChange={handleChange}
-                  placeholder="Masukkan nama lengkap"
-                  className="pl-10 w-full bg-slate-950 border border-slate-800 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-blue-500"
+                  placeholder="Nama Lengkap"
+                  className="w-full bg-[#FFFFFF] border border-[#999999] rounded-sm py-2 px-3 text-sm text-[#333333] focus:outline-none focus:border-[#4D148C]"
                 />
               </div>
-            </div>
-          )}
+            )}
 
-          <div>
-            <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Alamat Email</label>
-            <div className="relative">
-              <Mail className="absolute left-3 top-3 h-5 w-5 text-slate-500" />
+            <div>
+              <label className="block text-xs font-bold text-[#333333] mb-1">Alamat Email</label>
               <input
                 type="email"
                 name="email"
                 required
                 value={formData.email}
                 onChange={handleChange}
-                placeholder="email@domain.com"
-                className="pl-10 w-full bg-slate-950 border border-slate-800 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-blue-500"
+                placeholder="contoh@mail.com"
+                className="w-full bg-[#FFFFFF] border border-[#999999] rounded-sm py-2 px-3 text-sm text-[#333333] focus:outline-none focus:border-[#4D148C]"
               />
             </div>
-          </div>
 
-          <div>
-            <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Kata Sandi</label>
-            <div className="relative">
-              <Lock className="absolute left-3 top-3 h-5 w-5 text-slate-500" />
+            <div>
+              <label className="block text-xs font-bold text-[#333333] mb-1">Kata Sandi (Password)</label>
               <input
                 type="password"
                 name="password"
                 required
                 value={formData.password}
                 onChange={handleChange}
-                placeholder="••••••••"
-                className="pl-10 w-full bg-slate-950 border border-slate-800 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-blue-500"
+                placeholder="Password"
+                className="w-full bg-[#FFFFFF] border border-[#999999] rounded-sm py-2 px-3 text-sm text-[#333333] focus:outline-none focus:border-[#4D148C]"
               />
             </div>
-          </div>
 
-          {!isLogin && (
-            <>
-              <div>
-                <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Nomor Telepon</label>
-                <div className="relative">
-                  <Phone className="absolute left-3 top-3 h-5 w-5 text-slate-500" />
+            {!isLogin && (
+              <>
+                <div>
+                  <label className="block text-xs font-bold text-[#333333] mb-1">Nomor Telepon</label>
                   <input
                     type="text"
                     name="phone"
                     required
                     value={formData.phone}
                     onChange={handleChange}
-                    placeholder="Contoh: 08123456789"
-                    className="pl-10 w-full bg-slate-950 border border-slate-800 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-blue-500"
+                    placeholder="Nomor Telepon"
+                    className="w-full bg-[#FFFFFF] border border-[#999999] rounded-sm py-2 px-3 text-sm text-[#333333] focus:outline-none focus:border-[#4D148C]"
                   />
                 </div>
-              </div>
 
-              <div>
-                <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Peran Akun (Role)</label>
-                <div className="relative">
-                  <Shield className="absolute left-3 top-3 h-5 w-5 text-slate-500" />
+                <div>
+                  <label className="block text-xs font-bold text-[#333333] mb-1">Peran Akses (Role)</label>
                   <select
                     name="role"
                     value={formData.role}
                     onChange={handleChange}
-                    className="pl-10 w-full bg-slate-950 border border-slate-800 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none focus:border-blue-500 appearance-none"
+                    className="w-full bg-[#FFFFFF] border border-[#999999] rounded-sm py-2 px-3 text-sm text-[#333333] focus:outline-none focus:border-[#4D148C]"
                   >
-                    <option value="CUSTOMER">Customer (Pengirim Paket)</option>
-                    <option value="COURIER">Courier (Kurir Pengirim)</option>
-                    <option value="WAREHOUSE_STAFF">Warehouse Staff (Gudang)</option>
+                    <option value="CUSTOMER">Customer (Pelanggan)</option>
+                    <option value="COURIER">Courier (Kurir)</option>
+                    <option value="WAREHOUSE_STAFF">Warehouse Staff (Petugas Gudang)</option>
                     <option value="ADMIN">System Administrator</option>
                   </select>
                 </div>
-              </div>
-            </>
-          )}
+              </>
+            )}
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full mt-6 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-medium rounded-lg py-2.5 text-sm transition-all flex items-center justify-center gap-2 shadow-lg disabled:opacity-50"
-          >
-            {loading ? 'Memproses...' : isLogin ? 'Masuk' : 'Daftar Akun'}
-            <ArrowRight className="h-4 w-4" />
-          </button>
-        </form>
+            {/* Beveled 2003 Submit Button Style */}
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full mt-4 bg-[#FF6600] hover:bg-[#E05300] text-white font-bold rounded-sm py-2 px-4 text-sm transition-all border-b-2 border-[#B34700] hover:border-[#993D00] shadow-sm flex items-center justify-center gap-2 disabled:opacity-50"
+            >
+              {loading ? 'Sedang Memproses...' : isLogin ? 'Masuk Sekarang' : 'Daftarkan Akun'}
+              <ArrowRight className="h-4 w-4" />
+            </button>
+          </form>
+        </div>
       </div>
+
+      {/* Footer */}
+      <footer className="bg-[#EAEAEA] border-t border-[#CCCCCC] py-3 text-center text-xs text-[#666666] font-sans">
+        © 2003 Papiton Express Inc. All rights reserved. Global Trade Services, Tracking Systems.
+      </footer>
     </div>
   );
 };
